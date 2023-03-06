@@ -23,10 +23,10 @@ export default function SignUpPage() {
     <>
         <SignUpStepWrapper>
             <SignupMessage step={step}/>
-            <div>
-            <SignupStepHeader step={step}/>
-            <SignUpStepRenderer step={step} setStep={setStep} />
-            </div>
+            <StepBox>
+                <SignupStepHeader step={step}/>
+                <SignUpStepRenderer step={step} setStep={setStep} />
+            </StepBox>
         </SignUpStepWrapper>
         <BackButtonWrapper onClick={endSignUp}>
             <BackButton/>
@@ -48,4 +48,19 @@ const SignBackgroundIcon=styled(SignBackgroundIc)`
 const SignUpStepWrapper=styled.div`
     display: flex;
     position: absolute;
+`
+
+const StepBox=styled.div`
+    width: 77.9rem;
+    height: 88.8rem;
+
+    backdrop-filter: blur(1rem);
+
+    border: 0.3rem solid transparent;
+    border-radius: 5rem;
+    background-image: linear-gradient(rgba(20, 21, 23, 0.6), rgba(20, 21, 23, 0.6)),
+    linear-gradient(to top, transparent, #3E4045);
+
+    background-origin: border-box;
+    background-clip: content-box, border-box;
 `

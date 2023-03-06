@@ -12,6 +12,7 @@ export interface StepPropsType {
 }
 
 export interface ContinueButtonPropsTypes{
-  answer:string;
+  successNextStep:string;
+  step:string;
   setStep:React.Dispatch<React.SetStateAction<string>>;  
 }

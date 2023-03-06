@@ -4,10 +4,10 @@ export function chaeckStepType(stepType: string) {
     if(stepType === signUpStep.SIGNUP_ROLE){
         return 1
     }
-    else if(stepType === signUpStep.SIGNUP_EMAIL||signUpStep.SIGNUP_PASSWORD){
+    else if(stepType === signUpStep.SIGNUP_EMAIL_PASSWORD){
         return 2
     }
-    else if(stepType === signUpStep.SIGNUP_NICKNAME){
+    else if(stepType === signUpStep.SIGNUP_NICKNAME_CONVENTION){
         return 3
     }
 }

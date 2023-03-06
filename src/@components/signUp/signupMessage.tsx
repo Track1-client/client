@@ -15,9 +15,9 @@ export default function SignupMessage(props:StepPropsType) {
 }
 
 const SignBgLogoIcon=styled(SignBgLogoIc)`
-    margin: 53.4rem 24.9rem 0 23.3rem;
+    margin: 43.5rem 24.9rem 0 23.3rem;
 `
 
 const SignWelcomeIcon=styled(SignWelcomeIc)`
-    margin: 45.14rem 28.2rem 0 32.7rem;
+    margin: 35.2rem 28.2rem 0 32.7rem;
 `

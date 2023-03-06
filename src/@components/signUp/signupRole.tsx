@@ -2,6 +2,8 @@ import { useState } from 'react';
 import styled from 'styled-components'
 import { SignupNotSelectedProducerIc, SignupNotSelectedVocalIc, SignupSelectedProducerIc, SignupSelectedVocalIc, SignUpSelectRoleTitleIc } from '../../assets'
 import { currentUser } from '../../core/constants/userType';
+import { continueType } from '../../core/signUp/continueType';
+import { signUpStep } from '../../core/signUp/signupStepType';
 import { SetStepPropsType } from '../../type/signUpStepTypes';
 import ContinueButton from './continueButton';
 
@@ -30,7 +32,13 @@ export default function SignupRole(props:SetStepPropsType) {
       return selectedRole===role
     }
 
-    console.log(hoveredRole)
+    function successNextStep(){
+      return (
+        selectedRole?continueType.SUCCESS:continueType.FAIL
+      )
+  }
+
+
 
   return (
     <RoleWrapper>
@@ -38,7 +46,7 @@ export default function SignupRole(props:SetStepPropsType) {
 
       {checkHovered(currentUser.PRODUCER)||checkSelected(currentUser.PRODUCER)?<SignupSelectedProducerIcon onClick={()=>selectRole(currentUser.PRODUCER)} onMouseEnter={()=>hoverRole(currentUser.PRODUCER)} onMouseOut={hoverOut}/>:<SignupNotSelectedProducerIcon onMouseEnter={()=>hoverRole(currentUser.PRODUCER)} onMouseOut={hoverOut}/>}
       {checkHovered(currentUser.VOCAL)||checkSelected(currentUser.VOCAL)?<SignupSelectedVocalIcon onClick={()=>selectRole(currentUser.VOCAL)} onMouseEnter={()=>hoverRole(currentUser.VOCAL)} onMouseOut={hoverOut}/>:<SignupNotSelectedVocalIcon onMouseEnter={()=>hoverRole(currentUser.VOCAL)} onMouseOut={hoverOut}/>}    
-      <ContinueButton answer={selectedRole} setStep={setStep}/>
+      <ContinueButton successNextStep={successNextStep()} step={signUpStep.SIGNUP_EMAIL_PASSWORD} setStep={setStep}/>
     </RoleWrapper>
   )
 }

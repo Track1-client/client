@@ -1,6 +1,7 @@
 import React from 'react'
 import { signUpStep } from '../../core/signUp/signupStepType';
 import { StepPropsTypes } from '../../type/signUpStepTypes';
+import SignupEmailPassword from './signupEmailPassword';
 import SignupRole from './signupRole';
 
 export default function SignUpStepRenderer(props:StepPropsTypes) {
@@ -9,12 +10,10 @@ export default function SignUpStepRenderer(props:StepPropsTypes) {
     switch (step) {
         case signUpStep.SIGNUP_ROLE:
           return <SignupRole setStep={setStep} />;
-        // case signUpStep.SIGNUP_EMAIL:
-        //   return <SignupEmail setStep={setStep} />;
-        // case signUpStep.SIGNUP_PASSWORD:
-        //   return <SignupPassword setStep={setStep} />;
-        // case signUpStep.SIGNUP_NICKNAME:
-        //   return <SignupNickname setStep={setStep} />;
+        case signUpStep.SIGNUP_EMAIL_PASSWORD:
+          return <SignupEmailPassword setStep={setStep} />;
+        // case signUpStep.SIGNUP_NICKNAME_CONVENTION:
+        //   return <SignupNicknameConvention setStep={setStep} />;
         // case signUpStep.SIGNUP_PROFILE:
         //     return <SignupProfile setStep={setStep} />;
         // case signUpStep.SIGNUP_SUCCESS:
