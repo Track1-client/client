@@ -6,13 +6,14 @@ interface ButtonPropsType{
   isEmailSuccess:boolean;
   onClick: (e: React.MouseEvent<HTMLElement>) => void;
   isSendCode:boolean;
+  isResendCode:boolean;
 }
 
 export default function SendCodeButton(props:ButtonPropsType) {
-  const {isEmailSuccess, onClick, isSendCode}=props;
+  const {isEmailSuccess, onClick, isSendCode, isResendCode}=props;
 
   function isActive(){
-    if(isEmailSuccess||isSendCode){
+    if(isEmailSuccess||isSendCode||isResendCode){
       return true
     }
     else{

@@ -1,13 +1,13 @@
 import styled from 'styled-components';
 import { LoginHereMessageIc, SignUpStep1Ic, SignUpStep2Ic, SignUpStep3Ic, SignUpStepBlanckIc } from '../../assets';
-import { StepPropsType } from '../../type/signUpStepTypes'
+import { OnlyStepPropsType } from '../../type/signUpStepTypes'
 import { checkStepType } from '../../utils/signUp/stepType';
 import { useNavigate } from 'react-router-dom';
 import { signUpHeader } from '../../core/signUp/signupStepType';
 import { isHeaderExist, isStepOne, isStepThree, isStepTwo } from '../../utils/signUp/checkSignUpStep';
 
 
-export default function SignupStepHeader(props:StepPropsType) {
+export default function SignupStepHeader(props:OnlyStepPropsType) {
     const {step}=props;
     const navigate=useNavigate()
 

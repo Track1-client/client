@@ -26,25 +26,25 @@ export function isDefaultImage(image: string): boolean {
   return image === TrackUploadDefaultImg || image === VocalUploadDefaultImg;
 }
 
-function getFileURL(file: File): string {
+export function getFileURL(file: File): string {
   return URL.createObjectURL(file);
 }
 
-function getFileSize(file: File): number {
+export function getFileSize(file: File): number {
   return file.size;
 }
 
-function getImageType(uploadName: string): string {
+export function getImageType(uploadName: string): string {
   return uploadName.substring(uploadName.length - 4);
 }
 
-function checkImageSize(imageSize: number): boolean {
+export function checkImageSize(imageSize: number): boolean {
   if (imageSize > fileSize.LIMIT_IMAGE_SIZE) alert("파일용량 제한은 5MB 입니다.");
   return imageSize < fileSize.LIMIT_IMAGE_SIZE;
 }
 
-function checkImageType(uploadName: string): boolean {
+export function checkImageType(uploadName: string): boolean {
   const fileType = getImageType(uploadName);
-  !(fileType === ".jpg" || fileType === "jpeg" || fileType === ".png") && alert("확장자명을 확인해 주세요.");
-  return fileType === ".jpg" || fileType === "jpeg" || fileType === ".png";
+  !(fileType === ".jpg" || fileType === "jpeg" || fileType === ".png" || fileType === ".JPG" || fileType === ".JPEG" || fileType === ".PNG") && alert("jpg, jpeg, png 형식의 파일만 업로드할 수 있습니다.");
+  return fileType === ".jpg" || fileType === "jpeg" || fileType === ".png" || fileType === ".JPG" || fileType === ".JPEG" || fileType === ".PNG";
 }

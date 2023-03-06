@@ -1,12 +1,12 @@
 import React from 'react'
 import styled from 'styled-components';
 import { ConfirmPasswordTextIc, CreateAPasswordForYourAccountTitleIc, SignUpBackArrowIc, SignUpEmailTitleIc, SignUpErrorIc, SignUpEyeIc, SignUpEyeXIc, SignUpPasswordIc, SignUpVerifyIc, VerificationCodeTextIc, WeSentYouACodeTextIc, WhatsYourEmailIc } from '../../assets';
-import { SetStepPropsType } from '../../type/signUpStepTypes';
+import { SetPropsType } from '../../type/signUpStepTypes';
 import { useState } from 'react';
 import SendCodeButton from './sendCodeButton';
 import { emailInvalidMessage } from '../../core/userInfoErrorMessage/emailInvalidMessage';
 import { checkEmailForm } from '../../utils/errorMessage/checkEmailForm';
-import { authEmail } from '../../core/api/signUp';
+import { authEmail, repostAuthEmail, checkEmailDuplication, postVerifyCode } from '../../core/api/signUp';
 import { useEffect } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
 import VerifyButton from './verifyButton';
@@ -18,14 +18,18 @@ import { passwordInvalidMessage } from '../../core/userInfoErrorMessage/password
 import { checkPasswordForm } from '../../utils/errorMessage/checkPasswordForm';
 import { passwordConfirmType } from '../../core/signUp/passwordConfirm';
 import { continueType } from '../../core/signUp/continueType';
+import { useRecoilValue } from 'recoil';
+import { UserType } from '../../recoil/main';
 
-export default function SignupEmailPassword(props:SetStepPropsType) {
-    const {setStep}=props;
+export default function SignupEmailPassword(props:SetPropsType) {
+    const {setStep, setUserData}=props;
     const [email, setEmail]=useState<string>('')
     const [emailMessage, setEmailMessage]=useState<string>(emailInvalidMessage.NULL)
+    const [isValidForm, setIsValidForm]=useState<boolean>(false);
     const [password, setPassword]=useState<string>('')
     const [passwordMessage, setPasswordMessage]=useState<string>(passwordInvalidMessage.NULL)
     const [isSendCode, setIsSendCode]=useState<boolean>(false)
+    const [isResendCode, setIsResendCode]=useState<boolean>(false)
     const [verificationCode, setVerificationCode]=useState<string>('')
     const [verificationCodeMessage, setVerificationCodeMessage]=useState<string>(verificationCodeInvalidMessage.NULL)
     const [isVerify, setIsVerify]=useState<boolean>(false)
@@ -33,6 +37,9 @@ export default function SignupEmailPassword(props:SetStepPropsType) {
     const [passwordConfirmMessage, setPasswordConfirmMessage]=useState<string>(passwordInvalidMessage.NULL)
     const [isShowPassword, setIsShowPassword]=useState<boolean>(false)
     const [isShowPasswordConfirm, setIsShowPasswordConfirm]=useState<boolean>(false)
+    const tableName=useRecoilValue<string>(UserType)
+    const [isVerifyClicked, setIsVerifyClicked]=useState<boolean>(false);
+   
 
     function writeEmail(e: React.ChangeEvent<HTMLInputElement>){
         if(!e.target.value){
@@ -43,13 +50,73 @@ export default function SignupEmailPassword(props:SetStepPropsType) {
             setEmailMessage(emailInvalidMessage.FORM)
         }
 
-        //임시
         else if(checkEmailForm(e.target.value)){
-            setEmailMessage(emailInvalidMessage.SUCCESS)
+            setEmail(e.target.value)
+            setIsValidForm(prev=>!prev);
+            
         }
-
+ 
         setEmail(e.target.value)
     }
+ console.log(emailMessage)
+    //auth-mail post
+    const PostAuthMail = useMutation(authEmail, {
+        onSuccess: () => {
+        queryClient.invalidateQueries("email");
+        // setEmailMessage(emailInvalidMessage.TIME)
+        setEmail(email)
+        },
+        onError:(error)=>{
+
+        }
+    });
+
+    const queryClient = useQueryClient();
+
+    useEffect(() => {
+        let formData = new FormData();
+        formData.append("tableName", tableName);
+        formData.append("userEmail", email);
+        PostAuthMail.mutate(formData);
+    }, [isSendCode]);
+    //auth-mail post end
+
+    const {mutate:CheckDuplication } = useMutation(checkEmailDuplication, {
+        onSuccess: (data) => {
+        queryClient.invalidateQueries("email-duplicate");
+
+        data.isDuplicate?setEmailMessage(emailInvalidMessage.DUPLICATION):setEmailMessage(emailInvalidMessage.SUCCESS);
+        },
+        onError:(error)=>{
+        }
+    });
+
+    useEffect(() => {
+        let formData = new FormData();
+        formData.append("tableName", tableName);
+        formData.append("userEmail", email);
+        CheckDuplication(formData);
+    }, [isValidForm]);
+    //mail duplicate end
+
+    //auth-mail-repost
+    const RepostAuthMail = useMutation(repostAuthEmail, {
+        onSuccess: () => {
+        queryClient.invalidateQueries("email-repost");
+        // setEmailMessage(emailInvalidMessage.TIME)
+        setEmail(email)
+        },
+        onError:()=>{
+        }
+    });
+
+    useEffect(() => {
+        let formData = new FormData();
+        formData.append("tableName", tableName);
+        formData.append("userEmail", email);
+        RepostAuthMail.mutate(formData);
+    }, [isResendCode]);
+    //auth-mail post end
 
     function writePassword(e: React.ChangeEvent<HTMLInputElement>){
         if(!e.target.value){
@@ -84,12 +151,10 @@ export default function SignupEmailPassword(props:SetStepPropsType) {
     }
 
     function writeVerificationCode(e: React.ChangeEvent<HTMLInputElement>){
+        console.log(PostAuthMail.isError)
         if(!e.target.value){
-            setVerificationCodeMessage(passwordInvalidMessage.NULL)
+            setVerificationCodeMessage(verificationCodeInvalidMessage.NULL)
         }
-        
-        // else if()
-
         setVerificationCode(e.target.value)
     }
 
@@ -97,19 +162,41 @@ export default function SignupEmailPassword(props:SetStepPropsType) {
         return emailMessage===emailInvalidMessage.SUCCESS
     }
 
+    // sendCode나 resend 버튼 클릭
     function sendCode(e: React.MouseEvent){
-        //post함수 추가
+        isSendCode&&setIsResendCode((prev)=>!prev)
         setIsSendCode(true)
         setEmailMessage(emailInvalidMessage.TIME)
         setIsVerify(false)
     }
-
+    
     function verifyCode(e: React.MouseEvent){
-        //post함수 추가 -> 
-        // if(맞으면){}
-        setIsVerify(true)
-        setEmailMessage(emailInvalidMessage.VERIFY)
+       if(verificationCodeMessage===verificationCodeInvalidMessage.SUCCESS){
+            setIsVerify(true)
+            setEmailMessage(emailInvalidMessage.VERIFY) 
+       }       
     }
+
+    //verifycode post
+    const VerifyCode = useMutation(postVerifyCode, {
+        onSuccess: () => {
+        queryClient.invalidateQueries("verifycode");
+        setVerificationCodeMessage(verificationCodeInvalidMessage.SUCCESS)
+        },
+        onError:(error)=>{
+            verificationCode&&
+                setVerificationCodeMessage(verificationCodeInvalidMessage.ERROR)
+        }
+    });
+
+    useEffect(() => {
+        let formData = new FormData();
+        formData.append("tableName", tableName);
+        formData.append("userEmail", email);
+        formData.append("verificationCode", verificationCode);
+        VerifyCode.mutate(formData);
+    }, [verificationCode]);
+    //verifycode end
 
     function backToRole(){
         setStep(signUpStep.SIGNUP_ROLE)
@@ -173,25 +260,9 @@ export default function SignupEmailPassword(props:SetStepPropsType) {
         }
     }
 
-    //post
-  const { mutate } = useMutation(authEmail, {
-    onSuccess: () => {
-        //성공한 경우      
-    },
-    onError: (error) => { //400에러인 경우, 중복된 이메일
-        //에러난 경우
+    function saveUserData(){
+        successNextStep()&&setUserData((prev) => ({ ...prev, ID: email, PW:password }));
     }
-  });
-
-  const queryClient = useQueryClient();
-  //post end
-
-  useEffect(() => {
-      let formData = new FormData();
-      formData.append("tableName", "producer");
-      formData.append("userEmail", email);
-      mutate(formData);
-  }, [email]);
 
   return (
     <>
@@ -209,7 +280,7 @@ export default function SignupEmailPassword(props:SetStepPropsType) {
                         {setErrorIcon(emailMessage)}
                     </IconWrapper>
                 )}
-                <SendCodeButton isEmailSuccess={isEmailSuccess()} onClick={(e: React.MouseEvent<HTMLElement>) => sendCode(e)} isSendCode={isSendCode}/>
+                <SendCodeButton isEmailSuccess={isEmailSuccess()} onClick={(e: React.MouseEvent<HTMLElement>) => sendCode(e)} isSendCode={isSendCode} isResendCode={isResendCode}/>
             </InputWrapper>
             <MessageWrapper textColor={setMessageColor(emailMessage)}>
                 {emailMessage}
@@ -225,7 +296,7 @@ export default function SignupEmailPassword(props:SetStepPropsType) {
                             {setErrorIcon(verificationCodeMessage)}
                         </IconWrapper>
                     )}
-                    <VerifyButton verificationCode={verificationCode} onClick={(e: React.MouseEvent<HTMLElement>) => verifyCode(e)}/>
+                    <VerifyButton verificationCodeMessage={verificationCodeMessage} onClick={(e: React.MouseEvent<HTMLElement>) => verifyCode(e)}/>
                 </InputWrapper>
                 <MessageWrapper textColor={setMessageColor(verificationCodeMessage)}>
                     {verificationCodeMessage}
@@ -272,7 +343,9 @@ export default function SignupEmailPassword(props:SetStepPropsType) {
         </SignupEmailWrapper>
         <ArrowButtonWrapper>
             <SignUpBackArrowIcon onClick={backToRole}/>
-            <ContinueButton successNextStep={successNextStep()} step={signUpStep.SIGNUP_NICKNAME_CONVENTION} setStep={setStep}/>
+            <div onClick={saveUserData}>
+                 <ContinueButton successNextStep={successNextStep()} step={signUpStep.SIGNUP_NICKNAME_CONVENTION} setStep={setStep}/>
+            </div>
         </ArrowButtonWrapper>
     </>
   )

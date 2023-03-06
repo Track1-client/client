@@ -1,6 +1,6 @@
-import React, { useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { SignUpBackArrowIc, SignUpChangeImageIc, SignUpErrorIc, SignUpUploadImageIc, SignUpVerifyIc, WhatsYourNameTextIc } from '../../assets';
-import { SetStepPropsType } from '../../type/signUpStepTypes';
+import { SetUserPropsType } from '../../type/signUpStepTypes';
 import styled from 'styled-components';
 import { setInputUnderline, setMessageColor } from '../../utils/errorMessage/setInputStyle';
 import { signUpStep } from '../../core/signUp/signupStepType';
@@ -9,22 +9,34 @@ import { nicknameValidMessage } from '../../core/userInfoErrorMessage/nicknameMe
 import { checkNicknameForm } from '../../utils/errorMessage/checkNicknameForm';
 import ConventionCheckBox from './conventionCheckBox';
 import { continueType } from '../../core/signUp/continueType';
+import { useRecoilValue } from 'recoil';
+import { UserType } from '../../recoil/main';
+import { useMutation, useQueryClient } from 'react-query';
+import { joinProducer, joinVocal } from '../../core/api/signUp';
+import { isVocal, isProducer } from '../../utils/common/userType';
+import { checkImageSize, checkImageType, getFileSize, getFileURL } from '../../utils/uploadPage/uploadImage';
+import ProfilImageContainer from './profilImageContainer';
 
-export default function SignupNicknameConvention(props:SetStepPropsType) {
-    const {setStep}=props;
+export default function SignupNicknameConvention(props:SetUserPropsType) {
+    const {setStep, setUserData, userData}=props;
     const [imageSrc, setImageSrc] = useState<string>("");
     const [isHover, setIsHover]=useState<boolean>(false);
     const [nickname, setNickname]=useState<string>("")
     const [nicknameMessage, setNicknameMessage]=useState<string>(nicknameValidMessage.NULL)
     const [completeCheck, setCompleteCheck]=useState<boolean>(false)
+    const userType=useRecoilValue(UserType)
+    const [successNextStep, setSuccessNextStep]=useState<string>(continueType.FAIL)
 
-    const uploadImage = (e: React.ChangeEvent) => {
-      const targetFiles = (e.target as HTMLInputElement).files as FileList;
-      const targetFilesArray = Array.from(targetFiles);
-      const selectedFiles: string[] = targetFilesArray.map((file) => {
-        return URL.createObjectURL(file);
-      });
-      setImageSrc(selectedFiles[0]);
+    const uploadImage = (e: React.ChangeEvent<HTMLInputElement>) => {     
+      const uploadName = e.target.value.substring(e.target.value.lastIndexOf("\\") + 1);
+      if (checkImageType(uploadName) && e.target.files) {
+        const file = e.target.files[0];
+        const fileUrl: string = getFileURL(file);
+        const imageSize: number = getFileSize(file);
+        if (checkImageSize(imageSize)) {
+          setImageSrc(fileUrl);
+        }
+      }
     }
 
     function checkImageHover(){
@@ -43,13 +55,12 @@ export default function SignupNicknameConvention(props:SetStepPropsType) {
   }
 
   function moveBackToEmailPassword(){
+    setUserData((prev) => ({ ...prev, ID: "", PW:"" }));
     setStep(signUpStep.SIGNUP_EMAIL_PASSWORD)
   }
 
-  function successNextStep(){
-    return (
-      nicknameMessage===nicknameValidMessage.SUCCESS&&completeCheck?continueType.SUCCESS:continueType.FAIL
-    )
+  function completeNicknameConventions(){
+    return nicknameMessage===nicknameValidMessage.SUCCESS&&completeCheck
   }
 
   function writeNickname(e: React.ChangeEvent<HTMLInputElement>){
@@ -61,16 +72,50 @@ export default function SignupNicknameConvention(props:SetStepPropsType) {
       setNicknameMessage(nicknameValidMessage.ERROR)
     }
 
-    //임시
     else if(checkNicknameForm(e.target.value)){
       setNicknameMessage(nicknameValidMessage.SUCCESS)
     }
 
     setNickname(e.target.value)
   }
+
+  function saveUserData(){
+    setUserData((prev) => ({ ...prev, imageFile:imageSrc, name:nickname }));
+  }
+
+  //upload userData
+  const queryClient = useQueryClient();
+  
+  const JoinProducer = useMutation(joinProducer, {
+    onSuccess: () => {
+    queryClient.invalidateQueries("join-producer");
+    completeNicknameConventions()?setSuccessNextStep(continueType.SUCCESS):setSuccessNextStep(continueType.FAIL);
+    console.log("성공")
+    },
+    onError:()=>{
+
+    }
+  });
+
+  const JoinVocal = useMutation(joinVocal, {
+    onSuccess: () => {
+    queryClient.invalidateQueries("join-vocal");
+    console.log("성공")
+    },
+    onError:()=>{
+     
+    }
+  });
+
+  useEffect(() => {
+      isVocal(userType)&&JoinVocal.mutate(userData);
+      isProducer(userType)&&JoinProducer.mutate(userData);
+  }, [userData]);
+  //user data post end
+
   return (
     <>
-    <ImageContainer>
+    {/* <ImageContainer>
       <Label htmlFor='profile-img' onMouseEnter={checkImageHover} onMouseLeave={checkImageHover}>
         {imageSrc ? (
           <ImgWrapper>
@@ -82,7 +127,8 @@ export default function SignupNicknameConvention(props:SetStepPropsType) {
         {imageSrc&&isHover&&<SignUpChangeImageIcon/>}
       </Label>
         <input type="file" id="profile-img" style={{ visibility: "hidden" }} onChange={(e) => {uploadImage(e)}} />
-    </ImageContainer>
+    </ImageContainer> */}
+    <ProfilImageContainer imageSrc={imageSrc} checkImageHover={checkImageHover} isHover={isHover} uploadImage={uploadImage}/>
     
     <NicknameWrapper>
       <WhatsYourNameTextIc/>
@@ -101,7 +147,9 @@ export default function SignupNicknameConvention(props:SetStepPropsType) {
     <ConventionCheckBox setCompleteCheck={setCompleteCheck}/>
     <ArrowButtonWrapper>
       <SignUpBackArrowIcon onClick={moveBackToEmailPassword}/>
-      <ContinueButton successNextStep={successNextStep()} step={signUpStep.SIGNUP_PROFILE} setStep={setStep}/>
+      <div onClick={saveUserData}>
+        <ContinueButton successNextStep={successNextStep} step={signUpStep.SIGNUP_PROFILE} setStep={setStep}/>
+      </div>
     </ArrowButtonWrapper>
     
     </>
@@ -120,18 +168,29 @@ const ImageContainer=styled.section`
 `
 
 const ImgWrapper=styled.div`
-  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  
+  width: 21.7rem;
+  height: 21.7rem;
 
   border-radius: 25rem;
 
   position: absolute;
-
   overflow: hidden;
+
 `
 
 const Img=styled.img`
-  width: 100%;
-  
+    position: absolute;
+    top: 0;
+    left: 0;
+    transform: translate(50, 50);
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    margin: auto;
 `
 
 const SignUpChangeImageIcon=styled(SignUpChangeImageIc)`

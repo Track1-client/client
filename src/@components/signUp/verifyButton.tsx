@@ -1,17 +1,18 @@
 import React from 'react'
 import styled from 'styled-components'
 import { SignUpVerifyButtonIc } from '../../assets'
+import { verificationCodeInvalidMessage } from '../../core/userInfoErrorMessage/verificationCodeInvalidMessage';
 
 interface VerifyPropsType{
-    verificationCode:string
+    verificationCodeMessage:string
     onClick: (e: React.MouseEvent<HTMLElement>) => void;
 }
 
 export default function VerifyButton(props:VerifyPropsType) {
-    const {verificationCode, onClick}=props;
+    const {verificationCodeMessage, onClick}=props;
 
     function isActive(){
-        return verificationCode!=="";
+        return verificationCodeMessage==verificationCodeInvalidMessage.SUCCESS;
     }
     
   return (

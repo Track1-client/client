@@ -1,28 +1,28 @@
 import { signUpHeader } from "../../core/signUp/signupStepType"
-import { StepPropsType } from "../../type/signUpStepTypes"
+import { OnlyStepPropsType } from "../../type/signUpStepTypes"
 import { checkStepType } from "./stepType"
 
-export function isHeaderExist(props:StepPropsType){
+export function isHeaderExist(props:OnlyStepPropsType){
     const {step}=props;
     return checkStepType(step)!==signUpHeader.FOUR
 }
 
-export function isStepOne(props:StepPropsType){
+export function isStepOne(props:OnlyStepPropsType){
     const {step}=props;
     return checkStepType(step)===signUpHeader.ONE
 }
 
-export function isStepTwo(props:StepPropsType){
+export function isStepTwo(props:OnlyStepPropsType){
     const {step}=props;
     return checkStepType(step)===signUpHeader.TWO
 }
 
-export function isStepThree(props:StepPropsType){
+export function isStepThree(props:OnlyStepPropsType){
     const {step}=props;
     return checkStepType(step)===signUpHeader.THREE
 }
 
-export function isSignupSuccess(props:StepPropsType){
+export function isSignupSuccess(props:OnlyStepPropsType){
     const {step}=props;
     return checkStepType(step)===signUpHeader.FIVE
 }
