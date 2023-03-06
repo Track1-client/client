@@ -5,6 +5,7 @@ import SignupEmailPassword from './signupEmailPassword';
 import SignupNicknameConvention from './signupNicknameConvention';
 import SignupProfile from './signupProfile';
 import SignupRole from './signupRole';
+import SignupSuccess from './signupSuccess';
 
 export default function SignUpStepRenderer(props:StepPropsTypes) {
   const { step,setStep } = props;
@@ -18,8 +19,8 @@ export default function SignUpStepRenderer(props:StepPropsTypes) {
           return <SignupNicknameConvention setStep={setStep} />;
         case signUpStep.SIGNUP_PROFILE:
             return <SignupProfile setStep={setStep} />;
-        // case signUpStep.SIGNUP_SUCCESS:
-        //     return <SignupSuccess setStep={setStep} />;  
+        case signUpStep.SIGNUP_SUCCESS:
+            return <SignupSuccess />;  
         default:
           return <SignupRole setStep={setStep} />;
       }

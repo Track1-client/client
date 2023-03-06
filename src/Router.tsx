@@ -7,6 +7,7 @@ import VocalProfilePage from "./@pages/vocalProfilePage";
 import VocalsPage from "./@pages/vocalsPage";
 import UploadPage from "./@pages/uploadPage";
 import SignUpPage from './@pages/signUpPage';
+import SignupSuccess from './@components/signUp/signupSuccess';
 
 export default function Router() {
   return (

@@ -3,6 +3,9 @@ import { ConventionBlanckBoxIc, ConventionFullBoxIc } from '../../assets'
 import { conventionSelectedCheck } from '../../core/signUp/conventionSelectedCheck';
 import { ConventionChecksType } from '../../type/conventionChecksType';
 import styled from 'styled-components';
+import { conventionType } from '../../core/convention/conventionType';
+import { useRecoilState } from 'recoil';
+import { openConventionModal, openConventionPolicy } from '../../recoil/conventionModal';
 
 interface PropsType{
     setCompleteCheck: React.Dispatch<React.SetStateAction<boolean>>
@@ -12,7 +15,8 @@ export default function ConventionCheckBox(props:PropsType) {
     const {setCompleteCheck}=props
     const [checkedConventions, setCheckedConventions] = useState<ConventionChecksType[]>(conventionSelectedCheck);
     const [checkedCount, setCheckedCount]=useState<number>(0);
-
+    const [policy, setPolicy]=useRecoilState<string>(openConventionPolicy)
+    const [showModal, setShowModal]=useRecoilState<boolean>(openConventionModal)
 
     function categoryClick(id: number) {
         setCheckedConventions(
@@ -87,6 +91,25 @@ export default function ConventionCheckBox(props:PropsType) {
     function checkEssentialAgreeDone(essentialCheck:number){
         return essentialCheck===2
     }
+
+    function openModal(id:number){
+        setShowModal(true)
+        switch(id){
+            case 1:
+                setPolicy(conventionType.PERSONAL)
+                break;
+            case 2:
+                setPolicy(conventionType.USINGSITE)
+                break;
+            case 3:
+                setPolicy(conventionType.MARKETING)
+                break;
+            default:
+                setPolicy('');
+                break;
+        }
+    }
+
   return (
     <ConventionCheckBoxContainer>
     {checkedConventions.map(({id, selected, text}:ConventionChecksType)=>(
@@ -96,7 +119,7 @@ export default function ConventionCheckBox(props:PropsType) {
             </CheckBox>
             <TextWrapper>
                 <Title checkFirstIndex={checkFirstIndex(id)}>{text}</Title>
-                <FullConvention checkFirstIndex={checkFirstIndex(id)}>전체보기</FullConvention>
+                <FullConvention checkFirstIndex={checkFirstIndex(id)} onClick={()=>openModal(id)}>전체보기</FullConvention>
             </TextWrapper>
         </ConventionCheckBoxWrapper>
     ))}

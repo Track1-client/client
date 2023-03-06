@@ -1,17 +1,22 @@
 import styled from 'styled-components';
 import { SignBgLogoIc, SignUpCompleteButtonIc, SignUpSkipButtonIc, SignWelcomeIc } from '../../assets'
-import { StepPropsType } from '../../type/signUpStepTypes'
+import { signUpStep } from '../../core/signUp/signupStepType';
+import { StepPropsTypes } from '../../type/signUpStepTypes'
 import { isMessageLogo,isMessageWelcome } from '../../utils/signUp/checkMessageType';
 
-export default function SignupMessage(props:StepPropsType) {
-    const {step}=props;
+export default function SignupMessage(props:StepPropsTypes) {
+    const {step, setStep}=props;
+
+    function moveToSuccess(){
+      setStep(signUpStep.SIGNUP_SUCCESS)
+    }
 
     return (
     <>
     {isMessageLogo(step)&&<SignBgLogoIcon/>}
     {isMessageWelcome(step)&&(
       <WelcomeMessageWrapper>
-      <SignUpSkipButtonIcon/>
+      <SignUpSkipButtonIcon onClick={moveToSuccess}/>
       <SignWelcomeIcon/>
       <SignUpCompleteButtonIcon/>
       </WelcomeMessageWrapper>

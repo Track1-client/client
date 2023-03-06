@@ -169,3 +169,11 @@ export { ReactComponent as ConventionBlanckBoxIc } from "./icon/conventionBlanck
 export { ReactComponent as ConventionFullBoxIc } from "./icon/conventionFullBoxIc.svg";
 export { ReactComponent as SignUpCompleteButtonIc } from "./icon/signUpCompleteButtonIc.svg";
 export { ReactComponent as SignUpSkipButtonIc } from "./icon/signUpSkipButtonIc.svg";
+export { ReactComponent as SignUpGetStartedButtonIc } from "./icon/signUpGetStartedButtonIc.svg";
+export { ReactComponent as SignUpVocalButtonIc } from "./icon/signUpVocalButtonIc.svg";
+export { ReactComponent as SignUpProducerQIc } from "./icon/signUpProducerQIc.svg";
+export { ReactComponent as SignUpSuccessBackgroundIc } from "./icon/signUpSuccessBackgroundIc.svg";
+export { ReactComponent as SignUpVocalQIc } from "./icon/signUpVocalQIc.svg";
+export { ReactComponent as SignUpProducerButtonIc } from "./icon/signUpProducerButtonIc.svg";
+export { ReactComponent as MoveTouploadVocalSearchingButtonIc } from "./icon/moveTouploadVocalSearchingButtonIc.svg";
+export { ReactComponent as MoveTouploadPortfolioButtonIc } from "./icon/moveTouploadPortfolioButtonIc.svg";

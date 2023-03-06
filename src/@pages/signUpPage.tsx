@@ -1,37 +1,37 @@
 import { useState } from "react";
 import styled from 'styled-components';
-import BackButton from '../@components/@common/backButton';
-import { SignBackgroundIc } from '../assets';
 import Footer from '../@components/@common/footer';
 import SignUpStepRenderer from '../@components/signUp/signUpStepRenderer';
-import { signUpStep } from '../core/signUp/signupStepType';
+import { signUpHeader, signUpStep } from '../core/signUp/signupStepType';
 import SignupMessage from "../@components/signUp/signupMessage";
 import SignupStepHeader from "../@components/signUp/signupStepHeader";
 import ConventionModal from "../@components/@common/conventionModal";
 import SignBackground from "../assets/icon/signUpBackgroundIc.svg";
 import { conventionType } from "../core/convention/conventionType";
+import { checkStepType } from "../utils/signUp/stepType";
+import SignupSuccess from "../@components/signUp/signupSuccess";
+import SignUpBackButton from "../@components/signUp/signUpBackButton";
+import { isSignupSuccess } from "../utils/signUp/checkSignUpStep";
+import { useRecoilValue } from 'recoil';
+import { openConventionModal } from "../recoil/conventionModal";
 
 export default function SignUpPage() {
     const background=SignBackground
     const [step, setStep] = useState<string>(signUpStep.SIGNUP_ROLE);
-    const [showModal, setShowModal]=useState<boolean>(true);
-
-    function endSignUp(){
-        if (window.confirm('회원가입을 종료하겠습니까?'))
-        {
-            // clicked Yes
-        }
-    }
+    const [policy, setPolicy]=useState<string>('');
+    const showModal=useRecoilValue(openConventionModal)
+    console.log(showModal)
 
   return (
     <>
+    {isSignupSuccess({step})?<SignupSuccess/>:(
         <SignUpPageWrapper>
-            <BackButtonWrapper onClick={endSignUp}>
-                <BackButton/>
+            <BackButtonWrapper>
+                <SignUpBackButton/>
             </BackButtonWrapper>
             <SignUpContainer background={background}>
                 <SignUpStepWrapper>
-                    <SignupMessage step={step}/>
+                    <SignupMessage step={step} setStep={setStep}/>
                     <StepBox>
                         <SignupStepHeader step={step}/>
                         <SignUpStepRenderer step={step} setStep={setStep} />
@@ -40,10 +40,9 @@ export default function SignUpPage() {
             </SignUpContainer>
             <Footer/>
         </SignUpPageWrapper>
+    )}
 
-
-        {showModal&&(<ConventionModal policy={conventionType.USINGSITE} setShowModal={setShowModal}/>)}
-
+    {showModal&&(<ConventionModal/>)}
     </>
   )
 }
