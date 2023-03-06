@@ -193,8 +193,6 @@ export default function SignupEmailPassword(props:SetStepPropsType) {
       mutate(formData);
   }, [email]);
 
-  console.log(setInputUnderline(passwordMessage))
-
   return (
     <>
         <TitleWrapper>
@@ -347,14 +345,22 @@ const ConfirmPasswordTextIcon=styled(ConfirmPasswordTextIc)`
 `
 
 const SignUpBackArrowIcon=styled(SignUpBackArrowIc)`
-    position: absolute;
-    margin-left:11rem;
-
     cursor: pointer;
 `
 
 const ArrowButtonWrapper=styled.div`
-    margin-top:2.8rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    width: 56rem;
+    height: 4.6rem;
+
+    position: absolute;
+    left:11rem;
+    bottom: 7rem;
+
+    bottom: 7rem;
 `
 
 const EyeIcWrapper=styled.div`

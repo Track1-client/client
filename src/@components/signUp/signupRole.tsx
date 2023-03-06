@@ -46,7 +46,9 @@ export default function SignupRole(props:SetStepPropsType) {
 
       {checkHovered(currentUser.PRODUCER)||checkSelected(currentUser.PRODUCER)?<SignupSelectedProducerIcon onClick={()=>selectRole(currentUser.PRODUCER)} onMouseEnter={()=>hoverRole(currentUser.PRODUCER)} onMouseOut={hoverOut}/>:<SignupNotSelectedProducerIcon onMouseEnter={()=>hoverRole(currentUser.PRODUCER)} onMouseOut={hoverOut}/>}
       {checkHovered(currentUser.VOCAL)||checkSelected(currentUser.VOCAL)?<SignupSelectedVocalIcon onClick={()=>selectRole(currentUser.VOCAL)} onMouseEnter={()=>hoverRole(currentUser.VOCAL)} onMouseOut={hoverOut}/>:<SignupNotSelectedVocalIcon onMouseEnter={()=>hoverRole(currentUser.VOCAL)} onMouseOut={hoverOut}/>}    
-      <ContinueButton successNextStep={successNextStep()} step={signUpStep.SIGNUP_EMAIL_PASSWORD} setStep={setStep}/>
+      <ArrowButtonWrapper>
+        <ContinueButton successNextStep={successNextStep()} step={signUpStep.SIGNUP_EMAIL_PASSWORD} setStep={setStep}/>
+      </ArrowButtonWrapper>
     </RoleWrapper>
   )
 }
@@ -84,4 +86,19 @@ const SignupNotSelectedVocalIcon=styled(SignupNotSelectedVocalIc)`
   margin-left: 6.3rem;
 
   cursor: pointer;
+`
+
+const ArrowButtonWrapper=styled.div`
+    display: flex;
+    justify-content: right;
+    align-items: center;
+
+    width: 56rem;
+    height: 4.6rem;
+
+    position: absolute;
+    left:11rem;
+    bottom: 7rem;
+
+    bottom: 7rem;
 `

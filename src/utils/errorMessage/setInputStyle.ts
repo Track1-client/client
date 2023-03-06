@@ -1,66 +1,67 @@
 import { emailInvalidMessage } from "../../core/userInfoErrorMessage/emailInvalidMessage";
 import { passwordInvalidMessage } from "../../core/userInfoErrorMessage/passwordInvalidMessage";
 import { verificationCodeInvalidMessage } from "../../core/userInfoErrorMessage/verificationCodeInvalidMessage";
+import { nicknameValidMessage } from '../../core/userInfoErrorMessage/nicknameMessage';
+import { color } from "../../core/userInfoErrorMessage/color";
 
 export function setInputUnderline(message:string){ 
     switch (message) {
         case emailInvalidMessage.NULL:
-          return "#535559"
+          return color.GRAY
         case emailInvalidMessage.FORM:
-            return "#FF4F4F";
+            return color.RED;
         case emailInvalidMessage.DUPLICATION:
-          return "#FF4F4F";
+          return color.RED;
         case emailInvalidMessage.SUCCESS:
-            return "white"  
+            return color.WHITE  
         case emailInvalidMessage.VERIFY:
-            return "#5200FF";
+            return color.VIOLET;
         case verificationCodeInvalidMessage.NULL:
-            return "#535559"      
+            return color.GRAY      
         case verificationCodeInvalidMessage.ERROR:
-            return "#FF4F4F";    
+            return color.RED;    
         case passwordInvalidMessage.NULL:
-            return "#535559"      
+            return color.GRAY      
         case passwordInvalidMessage.FORM:
-            return "#FF4F4F";    
+            return color.RED;    
         case passwordInvalidMessage.MATCH:
-            return "#FF4F4F";   
+            return color.RED;   
         case passwordInvalidMessage.SUCCESS:
-            return "#5200FF";    
+            return color.VIOLET;   
+        case nicknameValidMessage.NULL:
+            return color.GRAY;   
+        case nicknameValidMessage.ERROR:
+            return color.RED;   
+        case nicknameValidMessage.SUCCESS:
+            return color.VIOLET;   
         default:
-            return "white";
+            return color.WHITE;
         }
 }
 
 export function setMessageColor(message:string){ 
     switch (message) {
         case emailInvalidMessage.NULL:
-          return "transparent"
+          return color.TRANSPARENT
         case emailInvalidMessage.FORM:
-            return "#FF4F4F";
+            return color.RED;
             case emailInvalidMessage.DUPLICATION:
-          return "#FF4F4F";
+          return color.RED;
         case emailInvalidMessage.TIME:
-            return "#5200FF";
+            return color.VIOLET;
         case verificationCodeInvalidMessage.ERROR:
-            return "#FF4F4F";
+            return color.RED;
         case passwordInvalidMessage.FORM:
-            return "#FF4F4F";      
+            return color.RED;      
         case passwordInvalidMessage.MATCH:
-            return "#FF4F4F";    
+            return color.RED;    
+        case nicknameValidMessage.NULL:
+            return color.TRANSPARENT;   
+        case nicknameValidMessage.ERROR:
+            return color.RED;   
+        case nicknameValidMessage.SUCCESS:
+            return color.TRANSPARENT;   
         default:
-            return "transparent"
+            return color.TRANSPARENT
         }
 }
-
-// export function setErrorIcon(message:string){ 
-//     switch (message) {
-//         case emailInvalidMessage.FORM:
-//             return typeof SignUpVerifyIc;
-//         case emailInvalidMessage.DUPLICATION:
-//             return typeof SignUpVerifyIc;
-//         case emailInvalidMessage.VERIFY:
-//             return typeof SignUpVerifyIc;
-//         default:
-//             return ;
-//     }
-// }
