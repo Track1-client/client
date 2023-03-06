@@ -329,7 +329,7 @@ const MessageWrapper=styled.p<{textColor:string}>`
 
     color: ${({textColor})=>textColor};
 
-    ${({ theme }) => theme.fonts.error_message};
+    ${({ theme }) => theme.fonts.message};
 `
 
 const IconWrapper=styled.div<{marginLeft:number}>`

@@ -10,6 +10,9 @@ import mainBackgroundImg from "../assets/image/mainBackgroundImg.png";
 import hoverVocalsImg from "../assets/image/hoverVocalsImg.png";
 import hoverTracksImg from "../assets/image/hoverTracksImg.png";
 import mainSloganImg from "../assets/image/mainSloganImg.png";
+import ConventionModal from "../@components/@common/conventionModal";
+import { openConventionModal } from "../recoil/conventionModal";
+import { useRecoilValue } from "recoil";
 
 export default function MainPage() {
   const navigate = useNavigate();
@@ -17,6 +20,8 @@ export default function MainPage() {
   const [background, setBackground] = useState<string>(mainBackgroundImg);
   const [isTracksHover, setIsTracksHover] = useState<boolean>(false);
   const [isVocalsHover, setIsVocalsHover] = useState<boolean>(false);
+  const showModal=useRecoilValue(openConventionModal)
+
 
   function setVocalsImg(e: React.MouseEvent<HTMLDivElement>) {
     setBackground(hoverVocalsImg);
@@ -39,6 +44,7 @@ export default function MainPage() {
   }
 
   return (
+    <>
     <MainPageWrapper>
       <Header />
       <Main>
@@ -51,10 +57,15 @@ export default function MainPage() {
       </Main>
       <Footer />
     </MainPageWrapper>
+
+    {showModal&&(<ConventionModal/>)}
+    </>
   );
 }
 
 const MainPageWrapper = styled.div`
+  position: absolute;
+
   background-color: black;
 `;
 

@@ -177,3 +177,5 @@ export { ReactComponent as SignUpVocalQIc } from "./icon/signUpVocalQIc.svg";
 export { ReactComponent as SignUpProducerButtonIc } from "./icon/signUpProducerButtonIc.svg";
 export { ReactComponent as MoveTouploadVocalSearchingButtonIc } from "./icon/moveTouploadVocalSearchingButtonIc.svg";
 export { ReactComponent as MoveTouploadPortfolioButtonIc } from "./icon/moveTouploadPortfolioButtonIc.svg";
+export { ReactComponent as InstagramLogoIc } from "./icon/instagramLogoIc.svg";
+export { ReactComponent as FacebookLogoIc } from "./icon/facebookLogoIc.svg";

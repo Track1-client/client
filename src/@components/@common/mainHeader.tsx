@@ -46,7 +46,6 @@ const HeaderContainer = styled.header`
   height: 14.3rem;
 
   position: fixed;
-  z-index: 999;
 `;
 
 const HeaderWrapper = styled.div`
