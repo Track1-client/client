@@ -12,7 +12,7 @@ export default function VerifyButton(props:VerifyPropsType) {
     const {verificationCodeMessage, onClick}=props;
 
     function isActive(){
-        return verificationCodeMessage==verificationCodeInvalidMessage.SUCCESS;
+        return verificationCodeMessage!==verificationCodeInvalidMessage.NULL;
     }
     
   return (
