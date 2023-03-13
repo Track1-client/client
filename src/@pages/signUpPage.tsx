@@ -85,6 +85,8 @@ const Img=styled.img`
 
 const SignUpStepWrapper=styled.div`
     display: flex;
+
+    position: absolute;
 `
 
 const StepBox=styled.div`
