@@ -3,6 +3,7 @@ import { getCookie } from "../../utils/cookie";
 
 export async function getTrackInfo(props: number) {
   const state = props;
+  console.log(state);
   try {
     const data = await axios.get(`${process.env.REACT_APP_BASE_URL}/tracks/${state}`, {
       headers: {
@@ -10,6 +11,7 @@ export async function getTrackInfo(props: number) {
         Authorization: `Bearer ${getCookie("accessToken")}`,
       },
     });
+    console.log(data);
     return data;
   } catch (e) {
     console.log(e);

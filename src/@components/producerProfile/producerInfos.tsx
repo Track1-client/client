@@ -16,7 +16,7 @@ export default function ProducerInfos(props: PropsType) {
   const { profileData } = props;
   const navigate = useNavigate();
 
-  console.log(profileData);
+  console.log(profileData?.profileImage);
 
   const tracksOrVocals = useRecoilValue<string>(tracksOrVocalsCheck);
 
@@ -36,12 +36,12 @@ export default function ProducerInfos(props: PropsType) {
       {tracksOrVocals === "Vocals" ? (
         <VocalProfileImageContainer>
           <VocalProfileImage>
-            <VocalProfileImg src={profileData.profileImge} alt="프로필이미지" />
+            <VocalProfileImg src={profileData?.profileImage} alt="프로필이미지" />
           </VocalProfileImage>
         </VocalProfileImageContainer>
       ) : (
         <ProfileImage>
-          <ProfileImg src={profileData.profileImge} alt="프로필이미지" />
+          <ProfileImg src={profileData?.profileImage} alt="프로필이미지" />
         </ProfileImage>
       )}
 

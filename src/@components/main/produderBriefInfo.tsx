@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import { useNavigate } from "react-router-dom";
 import { useRecoilState } from "recoil";
@@ -14,23 +14,18 @@ import { UserPropsType } from "../../type/userPropsType";
 export default function ProducerBriefInfo(props: UserPropsType) {
   const { userId } = props;
   const navigate = useNavigate();
-  const [isHovered, setIsHovered] = useState<boolean>(false);
-  const [profileData, setProfileData] = useState<ProducerProfileType>();
+  const [isShow, setIsShow] = useState<boolean>(false);
   const [loginUserImg, setLoginUserImg] = useRecoilState(LoginUserImg);
 
-  function hoverProfile() {
-    setIsHovered(true);
-  }
-
-  function hoverOutProfile() {
-    setIsHovered(false);
+  function changeProfileBoxDisplay() {
+    setIsShow(!isShow);
   }
 
   const { data } = useQuery(["profile", userId], () => getProducerPortfolio(userId, 1), {
     refetchOnWindowFocus: false,
     retry: 0,
     onSuccess: (data) => {
-      setProfileData(data.producerProfile);
+      console.log(data?.producerProfile);
       setLoginUserImg(data.producerProfile.profileImage);
     },
     onError: (error) => {
@@ -48,22 +43,22 @@ export default function ProducerBriefInfo(props: UserPropsType) {
   }
 
   return (
-    <div onMouseEnter={hoverProfile} onMouseLeave={hoverOutProfile}>
-      <InfoContainer onClick={moveToMypage}>
+    <div onClick={changeProfileBoxDisplay}>
+      <InfoContainer>
         <div>
-          <ProfileImage src={profileData?.profileImage} />
+          <ProfileImage src={data?.producerProfile?.profileImage} />
         </div>
-        <UserName>{profileData?.name}</UserName>
+        <UserName>{data?.producerProfile?.name}</UserName>
       </InfoContainer>
       <Blank></Blank>
-      {isHovered && (
+      {isShow && (
         <UserInfoContainer>
           <InfoBox>
-            <InfoProfileImage src={profileData?.profileImage} />
+            <InfoProfileImage src={data?.producerProfile?.profileImage} onClick={moveToMypage} />
             <TextWrapper>
-              <InfoUserName>{profileData?.name}</InfoUserName>
+              <InfoUserName onClick={moveToMypage}>{data?.producerProfile?.name}</InfoUserName>
               <MainInfoProducerIc />
-              <UserEmail>{profileData?.contact}</UserEmail>
+              <UserEmail>{data?.producerProfile?.contact}</UserEmail>
             </TextWrapper>
           </InfoBox>
           <LogoutBox onClick={logout}>

@@ -9,63 +9,58 @@ import { getVocalProfile } from "../../core/api/vocalProfile";
 import { UserPropsType } from "../../type/userPropsType";
 import { VocalProfileType } from "../../type/vocalProfile";
 import { getCookie, removeCookie } from "../../utils/cookie";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import { LoginUserImg } from "../../recoil/loginUserData";
 
-export default function VocalBriefInfo(props:UserPropsType) {
-  const {userId}=props;
-  const navigate=useNavigate();
-  const [isHovered, setIsHovered] = useState<boolean>(false);
+export default function VocalBriefInfo(props: UserPropsType) {
+  const { userId } = props;
+  const navigate = useNavigate();
+  const [isShow, setIsShow] = useState<boolean>(false);
   const [profileData, setProfileData] = useState<VocalProfileType>();
-  const [loginUserImg, setLoginUserImg]=useRecoilState(LoginUserImg)
+  const [loginUserImg, setLoginUserImg] = useRecoilState(LoginUserImg);
 
-  function hoverProfile() {
-    setIsHovered(true);
+  function changeProfileBoxDisplay() {
+    setIsShow(!isShow);
   }
 
-  function hoverOutProfile() {
-    setIsHovered(false);
-  }
-
-  const { data } = useQuery(["profile",userId], ()=>getVocalProfile(userId, 1)
-  , {
-    refetchOnWindowFocus: false, 
-    retry: 0, 
-    onSuccess: data => {
-        setProfileData(data.vocalProfile)
-        setLoginUserImg(data.producerProfile.profileImage);
+  const { data } = useQuery(["profile", userId], () => getVocalProfile(userId, 1), {
+    refetchOnWindowFocus: false,
+    retry: 0,
+    onSuccess: (data) => {
+      setProfileData(data.vocalProfile);
+      setLoginUserImg(data.producerProfile.profileImage);
     },
-    onError: error => {
+    onError: (error) => {
       console.log("실패");
-    }
+    },
   });
 
-  function logout (){
+  function logout() {
     onLogout();
   }
 
-  function moveToMypage(){
+  function moveToMypage() {
     navigate(`/vocal-profile/${userId}`);
   }
 
   return (
-    <div onMouseEnter={hoverProfile} onMouseLeave={hoverOutProfile}>
-      <InfoContainer onClick={moveToMypage}>
+    <div onClick={changeProfileBoxDisplay}>
+      <InfoContainer>
         <ProfileImageWrapper>
           <ProfileImage src={profileData?.profileImage} />
         </ProfileImageWrapper>
         <UserName>{profileData?.name}</UserName>
       </InfoContainer>
       <Blank></Blank>
-      {isHovered && (
+      {isShow && (
         <UserInfoContainer>
           <InfoBox>
             <ImageWrapper>
-              <InfoProfileImage src={profileData?.profileImage} />
+              <InfoProfileImage src={profileData?.profileImage} onClick={moveToMypage} />
             </ImageWrapper>
             <TextWrapper>
-              <InfoUserName>{profileData?.name}</InfoUserName>
+              <InfoUserName onClick={moveToMypage}>{profileData?.name}</InfoUserName>
               <MainInfoVocalIc />
               <UserEmail>{profileData?.contact}</UserEmail>
             </TextWrapper>
@@ -210,8 +205,8 @@ const LogoutBox = styled.div`
   color: ${({ theme }) => theme.colors.white};
 `;
 
-const Blank=styled.div`
+const Blank = styled.div`
   position: absolute;
   width: 50rem;
   height: 3rem;
-`
+`;
